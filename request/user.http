@@ -1,0 +1,26 @@
+### create user
+POST http://localhost:3002/user HTTP/1.1
+content-type: application/json
+
+{
+    "email": "sample",
+    "password": "sample",
+     "name":"sample"
+}
+
+### update user
+PUT http://localhost:3002/user/efc2d9df-766f-4fc9-8848-c6f88b0d4c30 HTTP/1.1
+content-type: application/json
+
+{
+    "authorId": "sample2"
+   
+}
+
+### GET userS
+GET http://localhost:3002/user/ HTTP/1.1
+content-type: application/json
+
+### GET user
+GET http://localhost:3002/user/efc2d9df-766f-4fc9-8848-c6f88b0d4c30 HTTP/1.1
+content-type: application/json

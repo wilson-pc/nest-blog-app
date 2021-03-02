@@ -1,0 +1,27 @@
+### create post
+POST http://localhost:3002/blog HTTP/1.1
+content-type: application/json
+
+{
+    "authorId": "efc2d9df-766f-4fc9-8848-c6f88b0d4c30",
+    "content":"sample",
+    "title":"sample"
+}
+
+### update post
+PUT http://localhost:3002/blog/bbfe2a24-2eb1-4337-bac6-d50bb11804e7 HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhbXBsZTIiLCJzdWIiOiJlZmMyZDlkZi03NjZmLTRmYzktODg0OC1jNmY4OGIwZDRjMzAiLCJpYXQiOjE2MTQ2NDk0NzEsImV4cCI6MTYxNDgyMjI3MX0.86se5-kGm6BY0VELzKQLnXeAiHWeok7p5S57SZZ-Tsk
+
+{
+    "title": "sample2"
+   
+}
+
+### GET post
+GET http://localhost:3002/blog/ HTTP/1.1
+content-type: application/json
+
+### GET post
+GET http://localhost:3002/blog/bbfe2a24-2eb1-4337-bac6-d50bb11804e7 HTTP/1.1
+content-type: application/json

@@ -7,22 +7,23 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["groupBy", "orderByRelation"]
+  provider = "prisma-client-js"
+  output   = "./generated"
 }
 
 model User {
-  email String  @unique
-  id    String  @id @default(uuid())
-  name  String?
-  image String?
-  posts Post[]
+  email    String  @unique
+  id       String  @id @default(uuid())
+  name     String?
+  image    String?
+  password String
+  posts    Post[]
 }
 
 model Post {
   authorId  String?
   content   String?
-  id        Int     @id @default(autoincrement())
+  id        String  @id @default(uuid())
   published Boolean @default(false)
   title     String
   author    User?   @relation(fields: [authorId], references: [id])
