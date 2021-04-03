@@ -6,8 +6,9 @@
 import * as runtime from './runtime';
 declare const prisma: unique symbol
 export type PrismaPromise<A> = Promise<A> & {[prisma]: true}
+type UnwrapPromise<P extends any> = P extends Promise<infer R> ? R : P
 type UnwrapTuple<Tuple extends readonly unknown[]> = {
-  [K in keyof Tuple]: K extends `${number}` ? Tuple[K] extends PrismaPromise<infer X> ? X : never : never
+  [K in keyof Tuple]: K extends `${number}` ? Tuple[K] extends PrismaPromise<infer X> ? X : UnwrapPromise<Tuple[K]> : UnwrapPromise<Tuple[K]>
 };
 
 
@@ -206,8 +207,8 @@ export namespace Prisma {
   export import Decimal = runtime.Decimal
 
   /**
-   * Prisma Client JS version: 2.17.0
-   * Query Engine version: 3c463ebd78b1d21d8fdacdd27899e280cf686223
+   * Prisma Client JS version: 2.20.1
+   * Query Engine version: 60ba6551f29b17d7d6ce479e5733c70d9c00860e
    */
   export type PrismaVersion = {
     client: string
@@ -664,6 +665,15 @@ export namespace Prisma {
     url?: string
   }
 
+  /**
+   * Count Types
+   */
+
+
+
+  /**
+   * Models
+   */
 
   /**
    * Model User
@@ -785,6 +795,38 @@ export namespace Prisma {
   }
 
 
+    
+    
+  export type UserGroupByArgs = {
+    where?: UserWhereInput
+    orderBy?: Enumerable<UserOrderByInput>
+    by: Array<UserScalarFieldEnum>
+    having?: UserScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    count?: UserCountAggregateInputType | true
+    min?: UserMinAggregateInputType
+    max?: UserMaxAggregateInputType
+  }
+
+
+  export type UserGroupByOutputType = {
+    email: string
+    id: string
+    name: string | null
+    image: string | null
+    password: string
+    count: UserCountAggregateOutputType | null
+    min: UserMinAggregateOutputType | null
+    max: UserMaxAggregateOutputType | null
+  }
+
+  type GetUserGroupByPayload<T extends UserGroupByArgs> = Promise<Array<
+    PickArray<UserGroupByOutputType, T['by']> & {
+      [P in ((keyof T) & (keyof UserGroupByOutputType))]: GetScalarType<T[P], UserGroupByOutputType[P]>
+    }
+  >>
+    
 
   export type UserSelect = {
     email?: boolean
@@ -1041,7 +1083,82 @@ export namespace Prisma {
     **/
     aggregate<T extends UserAggregateArgs>(args: Subset<T, UserAggregateArgs>): PrismaPromise<GetUserAggregateType<T>>
 
-
+    /**
+     * Group by User.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserGroupByArgs['orderBy'] }
+        : { orderBy?: UserGroupByArgs['orderBy'] },
+      OrderFields extends Keys<MaybeTupleToUnion<T['orderBy']>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserGroupByPayload<T> : Promise<InputErrors>
   }
 
   /**
@@ -1229,7 +1346,7 @@ export namespace Prisma {
     /**
      * The data needed to create a User.
     **/
-    data: XOR<UserUncheckedCreateInput, UserCreateInput>
+    data: XOR<UserCreateInput, UserUncheckedCreateInput>
   }
 
 
@@ -1248,7 +1365,7 @@ export namespace Prisma {
     /**
      * The data needed to update a User.
     **/
-    data: XOR<UserUncheckedUpdateInput, UserUpdateInput>
+    data: XOR<UserUpdateInput, UserUncheckedUpdateInput>
     /**
      * Choose, which User to update.
     **/
@@ -1260,7 +1377,7 @@ export namespace Prisma {
    * User updateMany
    */
   export type UserUpdateManyArgs = {
-    data: XOR<UserUncheckedUpdateManyInput, UserUpdateManyMutationInput>
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyInput>
     where?: UserWhereInput
   }
 
@@ -1284,11 +1401,11 @@ export namespace Prisma {
     /**
      * In case the User found by the `where` argument doesn't exist, create a new User with this data.
     **/
-    create: XOR<UserUncheckedCreateInput, UserCreateInput>
+    create: XOR<UserCreateInput, UserUncheckedCreateInput>
     /**
      * In case the User was found with the provided `where` argument, update it with this data.
     **/
-    update: XOR<UserUncheckedUpdateInput, UserUpdateInput>
+    update: XOR<UserUpdateInput, UserUncheckedUpdateInput>
   }
 
 
@@ -1455,6 +1572,38 @@ export namespace Prisma {
   }
 
 
+    
+    
+  export type PostGroupByArgs = {
+    where?: PostWhereInput
+    orderBy?: Enumerable<PostOrderByInput>
+    by: Array<PostScalarFieldEnum>
+    having?: PostScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    count?: PostCountAggregateInputType | true
+    min?: PostMinAggregateInputType
+    max?: PostMaxAggregateInputType
+  }
+
+
+  export type PostGroupByOutputType = {
+    authorId: string | null
+    content: string | null
+    id: string
+    published: boolean
+    title: string
+    count: PostCountAggregateOutputType | null
+    min: PostMinAggregateOutputType | null
+    max: PostMaxAggregateOutputType | null
+  }
+
+  type GetPostGroupByPayload<T extends PostGroupByArgs> = Promise<Array<
+    PickArray<PostGroupByOutputType, T['by']> & {
+      [P in ((keyof T) & (keyof PostGroupByOutputType))]: GetScalarType<T[P], PostGroupByOutputType[P]>
+    }
+  >>
+    
 
   export type PostSelect = {
     authorId?: boolean
@@ -1711,7 +1860,82 @@ export namespace Prisma {
     **/
     aggregate<T extends PostAggregateArgs>(args: Subset<T, PostAggregateArgs>): PrismaPromise<GetPostAggregateType<T>>
 
-
+    /**
+     * Group by Post.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PostGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PostGroupByArgs['orderBy'] }
+        : { orderBy?: PostGroupByArgs['orderBy'] },
+      OrderFields extends Keys<MaybeTupleToUnion<T['orderBy']>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PostGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPostGroupByPayload<T> : Promise<InputErrors>
   }
 
   /**
@@ -1899,7 +2123,7 @@ export namespace Prisma {
     /**
      * The data needed to create a Post.
     **/
-    data: XOR<PostUncheckedCreateInput, PostCreateInput>
+    data: XOR<PostCreateInput, PostUncheckedCreateInput>
   }
 
 
@@ -1918,7 +2142,7 @@ export namespace Prisma {
     /**
      * The data needed to update a Post.
     **/
-    data: XOR<PostUncheckedUpdateInput, PostUpdateInput>
+    data: XOR<PostUpdateInput, PostUncheckedUpdateInput>
     /**
      * Choose, which Post to update.
     **/
@@ -1930,7 +2154,7 @@ export namespace Prisma {
    * Post updateMany
    */
   export type PostUpdateManyArgs = {
-    data: XOR<PostUncheckedUpdateManyInput, PostUpdateManyMutationInput>
+    data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyInput>
     where?: PostWhereInput
   }
 
@@ -1954,11 +2178,11 @@ export namespace Prisma {
     /**
      * In case the Post found by the `where` argument doesn't exist, create a new Post with this data.
     **/
-    create: XOR<PostUncheckedCreateInput, PostCreateInput>
+    create: XOR<PostCreateInput, PostUncheckedCreateInput>
     /**
      * In case the Post was found with the provided `where` argument, update it with this data.
     **/
-    update: XOR<PostUncheckedUpdateInput, PostUpdateInput>
+    update: XOR<PostUpdateInput, PostUncheckedUpdateInput>
   }
 
 
@@ -2072,6 +2296,17 @@ export namespace Prisma {
     id?: string
   }
 
+  export type UserScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<UserScalarWhereWithAggregatesInput>
+    OR?: Enumerable<UserScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<UserScalarWhereWithAggregatesInput>
+    email?: StringWithAggregatesFilter | string
+    id?: StringWithAggregatesFilter | string
+    name?: StringNullableWithAggregatesFilter | string | null
+    image?: StringNullableWithAggregatesFilter | string | null
+    password?: StringWithAggregatesFilter | string
+  }
+
   export type PostWhereInput = {
     AND?: Enumerable<PostWhereInput>
     OR?: Enumerable<PostWhereInput>
@@ -2081,7 +2316,7 @@ export namespace Prisma {
     id?: StringFilter | string
     published?: BoolFilter | boolean
     title?: StringFilter | string
-    author?: XOR<UserWhereInput, UserRelationFilter> | null
+    author?: XOR<UserRelationFilter, UserWhereInput> | null
   }
 
   export type PostOrderByInput = {
@@ -2090,11 +2325,21 @@ export namespace Prisma {
     id?: SortOrder
     published?: SortOrder
     title?: SortOrder
-    author?: UserOrderByInput
   }
 
   export type PostWhereUniqueInput = {
     id?: string
+  }
+
+  export type PostScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<PostScalarWhereWithAggregatesInput>
+    OR?: Enumerable<PostScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<PostScalarWhereWithAggregatesInput>
+    authorId?: StringNullableWithAggregatesFilter | string | null
+    content?: StringNullableWithAggregatesFilter | string | null
+    id?: StringWithAggregatesFilter | string
+    published?: BoolWithAggregatesFilter | boolean
+    title?: StringWithAggregatesFilter | string
   }
 
   export type UserCreateInput = {
@@ -2230,6 +2475,40 @@ export namespace Prisma {
     none?: PostWhereInput
   }
 
+  export type StringWithAggregatesFilter = {
+    equals?: string
+    in?: Enumerable<string>
+    notIn?: Enumerable<string>
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    not?: NestedStringWithAggregatesFilter | string
+    count?: NestedIntFilter
+    min?: NestedStringFilter
+    max?: NestedStringFilter
+  }
+
+  export type StringNullableWithAggregatesFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    not?: NestedStringNullableWithAggregatesFilter | string | null
+    count?: NestedIntNullableFilter
+    min?: NestedStringNullableFilter
+    max?: NestedStringNullableFilter
+  }
+
   export type BoolFilter = {
     equals?: boolean
     not?: NestedBoolFilter | boolean
@@ -2240,14 +2519,22 @@ export namespace Prisma {
     isNot?: UserWhereInput | null
   }
 
+  export type BoolWithAggregatesFilter = {
+    equals?: boolean
+    not?: NestedBoolWithAggregatesFilter | boolean
+    count?: NestedIntFilter
+    min?: NestedBoolFilter
+    max?: NestedBoolFilter
+  }
+
   export type PostCreateNestedManyWithoutAuthorInput = {
-    create?: XOR<Enumerable<PostUncheckedCreateWithoutAuthorInput>, Enumerable<PostCreateWithoutAuthorInput>>
+    create?: XOR<Enumerable<PostCreateWithoutAuthorInput>, Enumerable<PostUncheckedCreateWithoutAuthorInput>>
     connectOrCreate?: Enumerable<PostCreateOrConnectWithoutAuthorInput>
     connect?: Enumerable<PostWhereUniqueInput>
   }
 
   export type PostUncheckedCreateNestedManyWithoutAuthorInput = {
-    create?: XOR<Enumerable<PostUncheckedCreateWithoutAuthorInput>, Enumerable<PostCreateWithoutAuthorInput>>
+    create?: XOR<Enumerable<PostCreateWithoutAuthorInput>, Enumerable<PostUncheckedCreateWithoutAuthorInput>>
     connectOrCreate?: Enumerable<PostCreateOrConnectWithoutAuthorInput>
     connect?: Enumerable<PostWhereUniqueInput>
   }
@@ -2261,7 +2548,7 @@ export namespace Prisma {
   }
 
   export type PostUpdateManyWithoutAuthorInput = {
-    create?: XOR<Enumerable<PostUncheckedCreateWithoutAuthorInput>, Enumerable<PostCreateWithoutAuthorInput>>
+    create?: XOR<Enumerable<PostCreateWithoutAuthorInput>, Enumerable<PostUncheckedCreateWithoutAuthorInput>>
     connectOrCreate?: Enumerable<PostCreateOrConnectWithoutAuthorInput>
     upsert?: Enumerable<PostUpsertWithWhereUniqueWithoutAuthorInput>
     connect?: Enumerable<PostWhereUniqueInput>
@@ -2274,7 +2561,7 @@ export namespace Prisma {
   }
 
   export type PostUncheckedUpdateManyWithoutAuthorInput = {
-    create?: XOR<Enumerable<PostUncheckedCreateWithoutAuthorInput>, Enumerable<PostCreateWithoutAuthorInput>>
+    create?: XOR<Enumerable<PostCreateWithoutAuthorInput>, Enumerable<PostUncheckedCreateWithoutAuthorInput>>
     connectOrCreate?: Enumerable<PostCreateOrConnectWithoutAuthorInput>
     upsert?: Enumerable<PostUpsertWithWhereUniqueWithoutAuthorInput>
     connect?: Enumerable<PostWhereUniqueInput>
@@ -2287,7 +2574,7 @@ export namespace Prisma {
   }
 
   export type UserCreateNestedOneWithoutPostsInput = {
-    create?: XOR<UserUncheckedCreateWithoutPostsInput, UserCreateWithoutPostsInput>
+    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
     connectOrCreate?: UserCreateOrConnectWithoutPostsInput
     connect?: UserWhereUniqueInput
   }
@@ -2297,13 +2584,13 @@ export namespace Prisma {
   }
 
   export type UserUpdateOneWithoutPostsInput = {
-    create?: XOR<UserUncheckedCreateWithoutPostsInput, UserCreateWithoutPostsInput>
+    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
     connectOrCreate?: UserCreateOrConnectWithoutPostsInput
     upsert?: UserUpsertWithoutPostsInput
     connect?: UserWhereUniqueInput
     disconnect?: boolean
     delete?: boolean
-    update?: XOR<UserUncheckedUpdateWithoutPostsInput, UserUpdateWithoutPostsInput>
+    update?: XOR<UserUpdateWithoutPostsInput, UserUncheckedUpdateWithoutPostsInput>
   }
 
   export type NestedStringFilter = {
@@ -2334,9 +2621,73 @@ export namespace Prisma {
     not?: NestedStringNullableFilter | string | null
   }
 
+  export type NestedStringWithAggregatesFilter = {
+    equals?: string
+    in?: Enumerable<string>
+    notIn?: Enumerable<string>
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    not?: NestedStringWithAggregatesFilter | string
+    count?: NestedIntFilter
+    min?: NestedStringFilter
+    max?: NestedStringFilter
+  }
+
+  export type NestedIntFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntFilter | number
+  }
+
+  export type NestedStringNullableWithAggregatesFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    not?: NestedStringNullableWithAggregatesFilter | string | null
+    count?: NestedIntNullableFilter
+    min?: NestedStringNullableFilter
+    max?: NestedStringNullableFilter
+  }
+
+  export type NestedIntNullableFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntNullableFilter | number | null
+  }
+
   export type NestedBoolFilter = {
     equals?: boolean
     not?: NestedBoolFilter | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter = {
+    equals?: boolean
+    not?: NestedBoolWithAggregatesFilter | boolean
+    count?: NestedIntFilter
+    min?: NestedBoolFilter
+    max?: NestedBoolFilter
   }
 
   export type PostCreateWithoutAuthorInput = {
@@ -2355,23 +2706,23 @@ export namespace Prisma {
 
   export type PostCreateOrConnectWithoutAuthorInput = {
     where: PostWhereUniqueInput
-    create: XOR<PostUncheckedCreateWithoutAuthorInput, PostCreateWithoutAuthorInput>
+    create: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput>
   }
 
   export type PostUpsertWithWhereUniqueWithoutAuthorInput = {
     where: PostWhereUniqueInput
-    update: XOR<PostUncheckedUpdateWithoutAuthorInput, PostUpdateWithoutAuthorInput>
-    create: XOR<PostUncheckedCreateWithoutAuthorInput, PostCreateWithoutAuthorInput>
+    update: XOR<PostUpdateWithoutAuthorInput, PostUncheckedUpdateWithoutAuthorInput>
+    create: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput>
   }
 
   export type PostUpdateWithWhereUniqueWithoutAuthorInput = {
     where: PostWhereUniqueInput
-    data: XOR<PostUncheckedUpdateWithoutAuthorInput, PostUpdateWithoutAuthorInput>
+    data: XOR<PostUpdateWithoutAuthorInput, PostUncheckedUpdateWithoutAuthorInput>
   }
 
   export type PostUpdateManyWithWhereWithoutAuthorInput = {
     where: PostScalarWhereInput
-    data: XOR<PostUncheckedUpdateManyWithoutPostsInput, PostUpdateManyMutationInput>
+    data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyWithoutPostsInput>
   }
 
   export type PostScalarWhereInput = {
@@ -2403,12 +2754,12 @@ export namespace Prisma {
 
   export type UserCreateOrConnectWithoutPostsInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserUncheckedCreateWithoutPostsInput, UserCreateWithoutPostsInput>
+    create: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
   }
 
   export type UserUpsertWithoutPostsInput = {
-    update: XOR<UserUncheckedUpdateWithoutPostsInput, UserUpdateWithoutPostsInput>
-    create: XOR<UserUncheckedCreateWithoutPostsInput, UserCreateWithoutPostsInput>
+    update: XOR<UserUpdateWithoutPostsInput, UserUncheckedUpdateWithoutPostsInput>
+    create: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
   }
 
   export type UserUpdateWithoutPostsInput = {

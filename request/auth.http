@@ -1,9 +1,9 @@
 ### login user
-POST http://localhost:3002/auth/login HTTP/1.1
+POST https://nest-blog-app.wilsonpc.repl.co/auth/login HTTP/1.1
 content-type: application/json
 
 {
-    "username": "sample2",
+    "username": "sample",
     "password": "sample"
    
 }
@@ -11,4 +11,4 @@ content-type: application/json
 ### GET profile
 GET http://localhost:3002/auth/profile HTTP/1.1
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhbXBsZTIiLCJzdWIiOiJlZmMyZDlkZi03NjZmLTRmYzktODg0OC1jNmY4OGIwZDRjMzAiLCJpYXQiOjE2MTQ2NDk0NzEsImV4cCI6MTYxNDgyMjI3MX0.86se5-kGm6BY0VELzKQLnXeAiHWeok7p5S57SZZ-Tsk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhbXBsZSIsInN1YiI6IjgxMWQ1MmJkLWY4OWMtNDliOC1hMzc1LTllNWQ3MDFlNWFiYyIsImlhdCI6MTYxNDgyMDU4NiwiZXhwIjoxNjE0OTkzMzg2fQ.TN4v4o6jaey6Q87T9PiF11O2XtHB2_6CYF9wxZxwOpU

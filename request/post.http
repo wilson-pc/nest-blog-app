@@ -1,11 +1,12 @@
 ### create post
-POST http://localhost:3002/blog HTTP/1.1
+POST https://nest-blog-app.wilsonpc.repl.co/blog HTTP/1.1
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhbXBsZSIsInN1YiI6IjgxMWQ1MmJkLWY4OWMtNDliOC1hMzc1LTllNWQ3MDFlNWFiYyIsImlhdCI6MTYxNDgyMDU4NiwiZXhwIjoxNjE0OTkzMzg2fQ.TN4v4o6jaey6Q87T9PiF11O2XtHB2_6CYF9wxZxwOpU
 
 {
-    "authorId": "efc2d9df-766f-4fc9-8848-c6f88b0d4c30",
-    "content":"sample",
-    "title":"sample"
+    "authorId": "811d52bd-f89c-49b8-a375-9e5d701e5abc",
+    "content":"The render method will be called each time an update happens, but as long as we render <Clock /> into the same DOM node, only a single instance of the Clock class will be used. This lets us use additional features such as local state and lifecycle methods.",
+    "title":"Segundo post"
 }
 
 ### update post

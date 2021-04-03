@@ -11,12 +11,12 @@ const Prisma = {}
 exports.Prisma = Prisma
 
 /**
- * Prisma Client JS version: 2.17.0
- * Query Engine version: 3c463ebd78b1d21d8fdacdd27899e280cf686223
+ * Prisma Client JS version: 2.20.1
+ * Query Engine version: 60ba6551f29b17d7d6ce479e5733c70d9c00860e
  */
 Prisma.prismaVersion = {
-  client: "2.17.0",
-  engine: "3c463ebd78b1d21d8fdacdd27899e280cf686223"
+  client: "2.20.1",
+  engine: "60ba6551f29b17d7d6ce479e5733c70d9c00860e"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -104,7 +104,7 @@ class PrismaClient {
   constructor() {
     throw new Error(
       `PrismaClient is unable to be run in the browser.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma-client-js/issues`,
+In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
     )
   }
 }
