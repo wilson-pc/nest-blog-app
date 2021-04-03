@@ -942,6 +942,22 @@ export namespace Prisma {
     ): CheckSelect<T, Prisma__UserClient<User>, Prisma__UserClient<UserGetPayload<T>>>
 
     /**
+     * Create many Users.
+     *     @param {UserCreateManyArgs} args - Arguments to create many Users.
+     *     @example
+     *     // Create many Users
+     *     const user = await prisma.user.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends UserCreateManyArgs>(
+      args?: SelectSubset<T, UserCreateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
      * Delete a User.
      * @param {UserDeleteArgs} args - Arguments to delete one User.
      * @example
@@ -1351,6 +1367,15 @@ export namespace Prisma {
 
 
   /**
+   * User createMany
+   */
+  export type UserCreateManyArgs = {
+    data: Enumerable<UserCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
    * User update
    */
   export type UserUpdateArgs = {
@@ -1717,6 +1742,22 @@ export namespace Prisma {
     create<T extends PostCreateArgs>(
       args: SelectSubset<T, PostCreateArgs>
     ): CheckSelect<T, Prisma__PostClient<Post>, Prisma__PostClient<PostGetPayload<T>>>
+
+    /**
+     * Create many Posts.
+     *     @param {PostCreateManyArgs} args - Arguments to create many Posts.
+     *     @example
+     *     // Create many Posts
+     *     const post = await prisma.post.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends PostCreateManyArgs>(
+      args?: SelectSubset<T, PostCreateManyArgs>
+    ): PrismaPromise<BatchPayload>
 
     /**
      * Delete a Post.
@@ -2128,6 +2169,15 @@ export namespace Prisma {
 
 
   /**
+   * Post createMany
+   */
+  export type PostCreateManyArgs = {
+    data: Enumerable<PostCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
    * Post update
    */
   export type PostUpdateArgs = {
@@ -2266,6 +2316,14 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const QueryMode: {
+    default: 'default',
+    insensitive: 'insensitive'
+  };
+
+  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
   /**
    * Deep Input Types
    */
@@ -2378,6 +2436,14 @@ export namespace Prisma {
     posts?: PostUncheckedUpdateManyWithoutAuthorInput
   }
 
+  export type UserCreateManyInput = {
+    email: string
+    id?: string
+    name?: string | null
+    image?: string | null
+    password: string
+  }
+
   export type UserUpdateManyMutationInput = {
     email?: StringFieldUpdateOperationsInput | string
     id?: StringFieldUpdateOperationsInput | string
@@ -2426,6 +2492,14 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
   }
 
+  export type PostCreateManyInput = {
+    authorId?: string | null
+    content?: string | null
+    id?: string
+    published?: boolean
+    title: string
+  }
+
   export type PostUpdateManyMutationInput = {
     content?: NullableStringFieldUpdateOperationsInput | string | null
     id?: StringFieldUpdateOperationsInput | string
@@ -2452,6 +2526,7 @@ export namespace Prisma {
     contains?: string
     startsWith?: string
     endsWith?: string
+    mode?: QueryMode
     not?: NestedStringFilter | string
   }
 
@@ -2466,6 +2541,7 @@ export namespace Prisma {
     contains?: string
     startsWith?: string
     endsWith?: string
+    mode?: QueryMode
     not?: NestedStringNullableFilter | string | null
   }
 
@@ -2486,6 +2562,7 @@ export namespace Prisma {
     contains?: string
     startsWith?: string
     endsWith?: string
+    mode?: QueryMode
     not?: NestedStringWithAggregatesFilter | string
     count?: NestedIntFilter
     min?: NestedStringFilter
@@ -2503,6 +2580,7 @@ export namespace Prisma {
     contains?: string
     startsWith?: string
     endsWith?: string
+    mode?: QueryMode
     not?: NestedStringNullableWithAggregatesFilter | string | null
     count?: NestedIntNullableFilter
     min?: NestedStringNullableFilter
@@ -2530,12 +2608,14 @@ export namespace Prisma {
   export type PostCreateNestedManyWithoutAuthorInput = {
     create?: XOR<Enumerable<PostCreateWithoutAuthorInput>, Enumerable<PostUncheckedCreateWithoutAuthorInput>>
     connectOrCreate?: Enumerable<PostCreateOrConnectWithoutAuthorInput>
+    createMany?: PostCreateManyAuthorInputEnvelope
     connect?: Enumerable<PostWhereUniqueInput>
   }
 
   export type PostUncheckedCreateNestedManyWithoutAuthorInput = {
     create?: XOR<Enumerable<PostCreateWithoutAuthorInput>, Enumerable<PostUncheckedCreateWithoutAuthorInput>>
     connectOrCreate?: Enumerable<PostCreateOrConnectWithoutAuthorInput>
+    createMany?: PostCreateManyAuthorInputEnvelope
     connect?: Enumerable<PostWhereUniqueInput>
   }
 
@@ -2551,6 +2631,7 @@ export namespace Prisma {
     create?: XOR<Enumerable<PostCreateWithoutAuthorInput>, Enumerable<PostUncheckedCreateWithoutAuthorInput>>
     connectOrCreate?: Enumerable<PostCreateOrConnectWithoutAuthorInput>
     upsert?: Enumerable<PostUpsertWithWhereUniqueWithoutAuthorInput>
+    createMany?: PostCreateManyAuthorInputEnvelope
     connect?: Enumerable<PostWhereUniqueInput>
     set?: Enumerable<PostWhereUniqueInput>
     disconnect?: Enumerable<PostWhereUniqueInput>
@@ -2564,6 +2645,7 @@ export namespace Prisma {
     create?: XOR<Enumerable<PostCreateWithoutAuthorInput>, Enumerable<PostUncheckedCreateWithoutAuthorInput>>
     connectOrCreate?: Enumerable<PostCreateOrConnectWithoutAuthorInput>
     upsert?: Enumerable<PostUpsertWithWhereUniqueWithoutAuthorInput>
+    createMany?: PostCreateManyAuthorInputEnvelope
     connect?: Enumerable<PostWhereUniqueInput>
     set?: Enumerable<PostWhereUniqueInput>
     disconnect?: Enumerable<PostWhereUniqueInput>
@@ -2709,6 +2791,11 @@ export namespace Prisma {
     create: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput>
   }
 
+  export type PostCreateManyAuthorInputEnvelope = {
+    data: Enumerable<PostCreateManyAuthorInput>
+    skipDuplicates?: boolean
+  }
+
   export type PostUpsertWithWhereUniqueWithoutAuthorInput = {
     where: PostWhereUniqueInput
     update: XOR<PostUpdateWithoutAuthorInput, PostUncheckedUpdateWithoutAuthorInput>
@@ -2776,6 +2863,13 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PostCreateManyAuthorInput = {
+    content?: string | null
+    id?: string
+    published?: boolean
+    title: string
   }
 
   export type PostUpdateWithoutAuthorInput = {

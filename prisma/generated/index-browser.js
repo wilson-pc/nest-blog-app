@@ -91,6 +91,11 @@ exports.Prisma.SortOrder = makeEnum({
   desc: 'desc'
 });
 
+exports.Prisma.QueryMode = makeEnum({
+  default: 'default',
+  insensitive: 'insensitive'
+});
+
 
 exports.Prisma.ModelName = makeEnum({
   User: 'User',
