@@ -83,7 +83,8 @@ exports.Prisma.PostScalarFieldEnum = makeEnum({
   content: 'content',
   id: 'id',
   published: 'published',
-  title: 'title'
+  title: 'title',
+  image: 'image'
 });
 
 exports.Prisma.SortOrder = makeEnum({

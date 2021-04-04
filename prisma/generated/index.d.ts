@@ -34,6 +34,7 @@ export type Post = {
   id: string
   published: boolean
   title: string
+  image: string | null
 }
 
 
@@ -1494,6 +1495,7 @@ export namespace Prisma {
     id: string | null
     published: boolean | null
     title: string | null
+    image: string | null
   }
 
   export type PostMaxAggregateOutputType = {
@@ -1502,6 +1504,7 @@ export namespace Prisma {
     id: string | null
     published: boolean | null
     title: string | null
+    image: string | null
   }
 
   export type PostCountAggregateOutputType = {
@@ -1510,6 +1513,7 @@ export namespace Prisma {
     id: number | null
     published: number | null
     title: number | null
+    image: number | null
     _all: number
   }
 
@@ -1520,6 +1524,7 @@ export namespace Prisma {
     id?: true
     published?: true
     title?: true
+    image?: true
   }
 
   export type PostMaxAggregateInputType = {
@@ -1528,6 +1533,7 @@ export namespace Prisma {
     id?: true
     published?: true
     title?: true
+    image?: true
   }
 
   export type PostCountAggregateInputType = {
@@ -1536,6 +1542,7 @@ export namespace Prisma {
     id?: true
     published?: true
     title?: true
+    image?: true
     _all?: true
   }
 
@@ -1618,6 +1625,7 @@ export namespace Prisma {
     id: string
     published: boolean
     title: string
+    image: string | null
     count: PostCountAggregateOutputType | null
     min: PostMinAggregateOutputType | null
     max: PostMaxAggregateOutputType | null
@@ -1637,6 +1645,7 @@ export namespace Prisma {
     published?: boolean
     title?: boolean
     author?: boolean | UserArgs
+    image?: boolean
   }
 
   export type PostInclude = {
@@ -2302,7 +2311,8 @@ export namespace Prisma {
     content: 'content',
     id: 'id',
     published: 'published',
-    title: 'title'
+    title: 'title',
+    image: 'image'
   };
 
   export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
@@ -2375,6 +2385,7 @@ export namespace Prisma {
     published?: BoolFilter | boolean
     title?: StringFilter | string
     author?: XOR<UserRelationFilter, UserWhereInput> | null
+    image?: StringNullableFilter | string | null
   }
 
   export type PostOrderByInput = {
@@ -2383,6 +2394,7 @@ export namespace Prisma {
     id?: SortOrder
     published?: SortOrder
     title?: SortOrder
+    image?: SortOrder
   }
 
   export type PostWhereUniqueInput = {
@@ -2398,6 +2410,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter | string
     published?: BoolWithAggregatesFilter | boolean
     title?: StringWithAggregatesFilter | string
+    image?: StringNullableWithAggregatesFilter | string | null
   }
 
   export type UserCreateInput = {
@@ -2465,6 +2478,7 @@ export namespace Prisma {
     id?: string
     published?: boolean
     title: string
+    image?: string | null
     author?: UserCreateNestedOneWithoutPostsInput
   }
 
@@ -2474,6 +2488,7 @@ export namespace Prisma {
     id?: string
     published?: boolean
     title: string
+    image?: string | null
   }
 
   export type PostUpdateInput = {
@@ -2481,6 +2496,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     author?: UserUpdateOneWithoutPostsInput
   }
 
@@ -2490,6 +2506,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PostCreateManyInput = {
@@ -2498,6 +2515,7 @@ export namespace Prisma {
     id?: string
     published?: boolean
     title: string
+    image?: string | null
   }
 
   export type PostUpdateManyMutationInput = {
@@ -2505,6 +2523,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PostUncheckedUpdateManyInput = {
@@ -2513,6 +2532,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type StringFilter = {
@@ -2777,6 +2797,7 @@ export namespace Prisma {
     id?: string
     published?: boolean
     title: string
+    image?: string | null
   }
 
   export type PostUncheckedCreateWithoutAuthorInput = {
@@ -2784,6 +2805,7 @@ export namespace Prisma {
     id?: string
     published?: boolean
     title: string
+    image?: string | null
   }
 
   export type PostCreateOrConnectWithoutAuthorInput = {
@@ -2821,6 +2843,7 @@ export namespace Prisma {
     id?: StringFilter | string
     published?: BoolFilter | boolean
     title?: StringFilter | string
+    image?: StringNullableFilter | string | null
   }
 
   export type UserCreateWithoutPostsInput = {
@@ -2870,6 +2893,7 @@ export namespace Prisma {
     id?: string
     published?: boolean
     title: string
+    image?: string | null
   }
 
   export type PostUpdateWithoutAuthorInput = {
@@ -2877,6 +2901,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PostUncheckedUpdateWithoutAuthorInput = {
@@ -2884,6 +2909,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PostUncheckedUpdateManyWithoutPostsInput = {
@@ -2891,6 +2917,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 
