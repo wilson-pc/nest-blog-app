@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from 'prisma/generated';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -9,8 +10,8 @@ export class BlogService {
     return this.prisma.post.create({ data: createBlogDto });
   }
 
-  findAll() {
-    return this.prisma.post.findMany();
+  findAll(query: Prisma.PostWhereInput) {
+    return this.prisma.post.findMany({ where: query });
   }
 
   findOne(id: string) {

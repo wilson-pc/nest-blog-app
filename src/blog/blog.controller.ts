@@ -7,7 +7,9 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
+import { Prisma } from 'prisma/generated';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { BlogService } from './blog.service';
 
@@ -22,8 +24,12 @@ export class BlogController {
   }
 
   @Get()
-  findAll() {
-    return this.blogService.findAll();
+  findAll(@Query('userId') userId: string) {
+    let params: Prisma.PostWhereInput = {};
+    if (userId) {
+      params = { authorId: userId };
+    }
+    return this.blogService.findAll(params);
   }
 
   @Get(':id')
