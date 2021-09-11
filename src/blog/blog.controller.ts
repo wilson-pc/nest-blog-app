@@ -9,7 +9,7 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'prisma/generated';
 
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { BlogService } from './blog.service';
