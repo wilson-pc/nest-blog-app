@@ -1,12 +1,40 @@
+import { Prisma } from '@prisma/client';
 import { BlogService } from './blog.service';
+import { HttpService } from '@nestjs/axios';
+import { CreatePostDto } from './dto/post-create-dto';
+import { PostUpateDto } from './dto/post-update-dto';
 export declare class BlogController {
     private readonly blogService;
-    constructor(blogService: BlogService);
-    create(createBlogDto: any): Promise<import(".prisma/client").Post>;
-    findAll(userId: string): import(".prisma/client").PrismaPromise<import(".prisma/client").Post[]>;
-    findOne(id: string): import(".prisma/client").Prisma.Prisma__PostClient<import(".prisma/client").Post & {
-        author: import(".prisma/client").User;
+    private axios;
+    constructor(blogService: BlogService, axios: HttpService);
+    create(createBlogDto: CreatePostDto, req: any): Promise<import(".prisma/client").Post>;
+    findAll(userId: string): import(".prisma/client").PrismaPromise<{
+        id: string;
+        content: string;
+        published: boolean;
+        title: string;
+        image: string;
+        createdAt: Date;
+        author: {
+            id: string;
+            name: string;
+            email: string;
+        };
+    }[]>;
+    findOne(id: string): Prisma.Prisma__PostClient<{
+        id: string;
+        content: string;
+        published: boolean;
+        title: string;
+        image: string;
+        createdAt: Date;
+        updatedAt: Date;
+        author: {
+            id: string;
+            name: string;
+            email: string;
+        };
     }>;
-    update(id: string, updateBlogDto: any): import(".prisma/client").Prisma.Prisma__PostClient<import(".prisma/client").Post>;
-    remove(id: string): import(".prisma/client").Prisma.Prisma__PostClient<import(".prisma/client").Post>;
+    update(id: string, updateBlogDto: PostUpateDto, req: any): Promise<import(".prisma/client").Post>;
+    remove(id: string, req: any): import(".prisma/client").PrismaPromise<Prisma.BatchPayload>;
 }

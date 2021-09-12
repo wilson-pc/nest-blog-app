@@ -50,7 +50,7 @@ let UserService = class UserService {
                 email: true,
                 image: true,
                 updatedAt: true,
-                posts: true,
+                posts: { where: { published: true } },
             },
         });
     }

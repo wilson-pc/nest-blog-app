@@ -3,10 +3,15 @@ export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
     login(req: any): Promise<{
+        user: import("../payload").Payload;
         access_token: string;
-        user: any;
     }>;
-    getProfile(req: any): Promise<import(".prisma/client").User & {
-        posts: import(".prisma/client").Post[];
+    getProfile(req: any): Promise<{
+        email: string;
+        id: string;
+        name: string;
+        image: string;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
 }

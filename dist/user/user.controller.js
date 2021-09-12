@@ -13,16 +13,38 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
+const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const rxjs_1 = require("rxjs");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const FormData = require("form-data");
 const user_create_dto_1 = require("./dto/user-create-dto");
 const user_service_1 = require("./user.service");
+const user_update_dto_1 = require("./dto/user-update-dto");
+const payload_1 = require("../payload");
 let UserController = class UserController {
-    constructor(userService) {
+    constructor(userService, axios) {
         this.userService = userService;
+        this.axios = axios;
     }
-    create(createUserDto) {
+    async create(createUserDto) {
+        if (createUserDto.image) {
+            try {
+                const buff = Buffer.from(createUserDto.image.split(';base64,').pop(), 'base64');
+                const form = new FormData();
+                form.append('file', buff, 'gato.jpg');
+                const instance = this.axios.post('https://telegra.ph/upload', form, {
+                    headers: Object.assign({}, form.getHeaders()),
+                });
+                const { data } = await (0, rxjs_1.lastValueFrom)(instance);
+                const [{ src }] = data;
+                createUserDto.image = 'https://telegra.ph' + src;
+            }
+            catch (error) {
+                throw new common_1.HttpException(error.message, common_1.HttpStatus.BAD_REQUEST);
+            }
+        }
         return this.userService.create(createUserDto);
     }
     findAll() {
@@ -31,11 +53,39 @@ let UserController = class UserController {
     findOne(id) {
         return this.userService.findOne(id);
     }
-    update(id, updateUserDto) {
-        return this.userService.update(id, updateUserDto);
+    async update(id, updateUserDto, req) {
+        const user = req.user;
+        if (id == user.sub) {
+            if (updateUserDto.image && !updateUserDto.image.includes('telegra.ph/')) {
+                try {
+                    const buff = Buffer.from(updateUserDto.image.split(';base64,').pop(), 'base64');
+                    const form = new FormData();
+                    form.append('file', buff, 'gato.jpg');
+                    const instance = this.axios.post('https://telegra.ph/upload', form, {
+                        headers: Object.assign({}, form.getHeaders()),
+                    });
+                    const { data } = await (0, rxjs_1.lastValueFrom)(instance);
+                    const [{ src }] = data;
+                    updateUserDto.image = 'https://telegra.ph' + src;
+                }
+                catch (error) {
+                    throw new common_1.HttpException(error.message, common_1.HttpStatus.BAD_REQUEST);
+                }
+            }
+            return this.userService.update(id, updateUserDto);
+        }
+        else {
+            throw new common_1.HttpException('action not allowed', common_1.HttpStatus.UNAUTHORIZED);
+        }
     }
-    remove(id) {
-        return this.userService.remove(id);
+    remove(id, req) {
+        const user = req.user;
+        if (id == user.sub) {
+            return this.userService.remove(id);
+        }
+        else {
+            throw new common_1.HttpException('action not allowed', common_1.HttpStatus.UNAUTHORIZED);
+        }
     }
 };
 __decorate([
@@ -44,7 +94,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_create_dto_1.CreateUserDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
@@ -68,9 +118,10 @@ __decorate([
     (0, common_1.Put)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [String, user_update_dto_1.UpdateUserDto, Object]),
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "update", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
@@ -78,14 +129,16 @@ __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Delete user' }),
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "remove", null);
 UserController = __decorate([
     (0, swagger_1.ApiTags)('User'),
     (0, common_1.Controller)({ path: 'user', version: '1' }),
-    __metadata("design:paramtypes", [user_service_1.UserService])
+    __metadata("design:paramtypes", [user_service_1.UserService,
+        axios_1.HttpService])
 ], UserController);
 exports.UserController = UserController;
 //# sourceMappingURL=user.controller.js.map

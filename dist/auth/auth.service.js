@@ -24,6 +24,8 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const jwt_1 = require("@nestjs/jwt");
+const bcrypt = require("bcrypt");
+const payload_1 = require("../payload");
 let AuthService = class AuthService {
     constructor(prisma, jwtService) {
         this.prisma = prisma;
@@ -31,23 +33,31 @@ let AuthService = class AuthService {
     }
     async validateUser(email, pass) {
         const user = await this.prisma.user.findUnique({ where: { email: email } });
-        if (user && user.password === pass) {
+        console.log(user);
+        if (user && bcrypt.compareSync(pass, user.password)) {
             const { password } = user, result = __rest(user, ["password"]);
             return result;
         }
         return null;
     }
     async login(user) {
-        const payload = { username: user.email, sub: user.id };
+        const payload = { email: user.email, sub: user.id };
         return {
+            user: payload,
             access_token: this.jwtService.sign(payload),
-            user: user,
         };
     }
     async getProfile(id) {
         return this.prisma.user.findUnique({
             where: { id: id },
-            include: { posts: true },
+            select: {
+                email: true,
+                image: true,
+                id: true,
+                updatedAt: true,
+                name: true,
+                createdAt: true,
+            },
         });
     }
 };

@@ -15,7 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
+const swagger_1 = require("@nestjs/swagger");
 const auth_service_1 = require("./auth.service");
+const login_dto_1 = require("./dto/login-dto");
 const jwt_auth_guard_1 = require("./jwt-auth.guard");
 let AuthController = class AuthController {
     constructor(authService) {
@@ -25,11 +27,13 @@ let AuthController = class AuthController {
         return this.authService.login(req.user);
     }
     getProfile(req) {
-        return this.authService.getProfile(req.user.userId);
+        return this.authService.getProfile(req.user.sub);
     }
 };
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('local')),
+    (0, swagger_1.ApiOperation)({ summary: 'Login User' }),
+    (0, swagger_1.ApiBody)({ type: login_dto_1.LoginDto }),
     (0, common_1.Post)('login'),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -38,6 +42,8 @@ __decorate([
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiOperation)({ summary: 'get current user' }),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Get)('profile'),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -45,7 +51,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "getProfile", null);
 AuthController = __decorate([
-    (0, common_1.Controller)('auth'),
+    (0, swagger_1.ApiTags)('Auth'),
+    (0, common_1.Controller)({ path: 'auth', version: '1' }),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
 exports.AuthController = AuthController;

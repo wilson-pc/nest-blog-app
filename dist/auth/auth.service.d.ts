@@ -1,15 +1,22 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '.prisma/client';
+import { Payload } from 'src/payload';
 export declare class AuthService {
     private readonly prisma;
     private jwtService;
     constructor(prisma: PrismaService, jwtService: JwtService);
     validateUser(email: string, pass: string): Promise<any>;
-    login(user: any): Promise<{
+    login(user: User): Promise<{
+        user: Payload;
         access_token: string;
-        user: any;
     }>;
-    getProfile(id: string): Promise<import(".prisma/client").User & {
-        posts: import(".prisma/client").Post[];
+    getProfile(id: string): Promise<{
+        email: string;
+        id: string;
+        name: string;
+        image: string;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
 }
