@@ -8,29 +8,29 @@ export declare class BlogService {
     create(createBlogDto: any, user: Payload): Promise<import(".prisma/client").Post>;
     findAll(query: Prisma.PostWhereInput): import(".prisma/client").PrismaPromise<{
         id: string;
-        content: string;
-        published: boolean;
-        title: string;
         image: string;
         createdAt: Date;
+        title: string;
+        content: string;
+        published: boolean;
         author: {
+            email: string;
             id: string;
             name: string;
-            email: string;
         };
     }[]>;
     findOne(id: string): Prisma.Prisma__PostClient<{
         id: string;
-        content: string;
-        published: boolean;
-        title: string;
         image: string;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
+        content: string;
+        published: boolean;
         author: {
+            email: string;
             id: string;
             name: string;
-            email: string;
         };
     }>;
     update(id: string, updateBlogDto: PostUpateDto, user: Payload): Promise<import(".prisma/client").Post>;

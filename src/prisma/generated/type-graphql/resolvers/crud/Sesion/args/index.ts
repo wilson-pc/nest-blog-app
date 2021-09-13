@@ -1,0 +1,12 @@
+export { AggregateSesionArgs } from "./AggregateSesionArgs";
+export { CreateManySesionArgs } from "./CreateManySesionArgs";
+export { CreateSesionArgs } from "./CreateSesionArgs";
+export { DeleteManySesionArgs } from "./DeleteManySesionArgs";
+export { DeleteSesionArgs } from "./DeleteSesionArgs";
+export { FindFirstSesionArgs } from "./FindFirstSesionArgs";
+export { FindManySesionArgs } from "./FindManySesionArgs";
+export { FindUniqueSesionArgs } from "./FindUniqueSesionArgs";
+export { GroupBySesionArgs } from "./GroupBySesionArgs";
+export { UpdateManySesionArgs } from "./UpdateManySesionArgs";
+export { UpdateSesionArgs } from "./UpdateSesionArgs";
+export { UpsertSesionArgs } from "./UpsertSesionArgs";

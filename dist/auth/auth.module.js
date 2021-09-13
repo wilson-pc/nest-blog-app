@@ -15,6 +15,8 @@ const local_strategy_1 = require("./local.strategy");
 const passport_1 = require("@nestjs/passport");
 const jwt_1 = require("@nestjs/jwt");
 const jwt_strategy_1 = require("./jwt.strategy");
+const auth_resolver_1 = require("./auth.resolver");
+const type_graphql_1 = require("../prisma/generated/type-graphql");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -27,7 +29,13 @@ AuthModule = __decorate([
             }),
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy],
+        providers: [
+            auth_service_1.AuthService,
+            local_strategy_1.LocalStrategy,
+            jwt_strategy_1.JwtStrategy,
+            auth_resolver_1.AuthResolver,
+            type_graphql_1.UserRelationsResolver,
+        ],
         exports: [auth_service_1.AuthService, jwt_1.JwtModule],
     })
 ], AuthModule);

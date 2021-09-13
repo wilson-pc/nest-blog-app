@@ -12,13 +12,14 @@ const user_service_1 = require("./user.service");
 const user_controller_1 = require("./user.controller");
 const prisma_module_1 = require("../prisma/prisma.module");
 const axios_1 = require("@nestjs/axios");
+const user_resolver_1 = require("./user.resolver");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
     (0, common_1.Module)({
         imports: [prisma_module_1.PrismaModule, axios_1.HttpModule],
         controllers: [user_controller_1.UserController],
-        providers: [user_service_1.UserService],
+        providers: [user_service_1.UserService, user_resolver_1.UserResolver],
     })
 ], UserModule);
 exports.UserModule = UserModule;

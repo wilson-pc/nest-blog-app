@@ -11,6 +11,11 @@ generator client {
   previewFeatures = ["mongodb"]
 }
 
+generator typegraphql {
+  provider = "typegraphql-prisma"
+  output   = "../src/prisma/generated/type-graphql"
+}
+
 model User {
   email     String   @unique
   id        String   @id @default(dbgenerated()) @map("_id") @db.ObjectId

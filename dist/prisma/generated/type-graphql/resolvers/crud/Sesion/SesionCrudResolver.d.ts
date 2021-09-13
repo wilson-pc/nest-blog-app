@@ -1,0 +1,31 @@
+import { GraphQLResolveInfo } from "graphql";
+import { AggregateSesionArgs } from "./args/AggregateSesionArgs";
+import { CreateManySesionArgs } from "./args/CreateManySesionArgs";
+import { CreateSesionArgs } from "./args/CreateSesionArgs";
+import { DeleteManySesionArgs } from "./args/DeleteManySesionArgs";
+import { DeleteSesionArgs } from "./args/DeleteSesionArgs";
+import { FindFirstSesionArgs } from "./args/FindFirstSesionArgs";
+import { FindManySesionArgs } from "./args/FindManySesionArgs";
+import { FindUniqueSesionArgs } from "./args/FindUniqueSesionArgs";
+import { GroupBySesionArgs } from "./args/GroupBySesionArgs";
+import { UpdateManySesionArgs } from "./args/UpdateManySesionArgs";
+import { UpdateSesionArgs } from "./args/UpdateSesionArgs";
+import { UpsertSesionArgs } from "./args/UpsertSesionArgs";
+import { Sesion } from "../../../models/Sesion";
+import { AffectedRowsOutput } from "../../outputs/AffectedRowsOutput";
+import { AggregateSesion } from "../../outputs/AggregateSesion";
+import { SesionGroupBy } from "../../outputs/SesionGroupBy";
+export declare class SesionCrudResolver {
+    sesion(ctx: any, info: GraphQLResolveInfo, args: FindUniqueSesionArgs): Promise<Sesion | null>;
+    findFirstSesion(ctx: any, info: GraphQLResolveInfo, args: FindFirstSesionArgs): Promise<Sesion | null>;
+    sesions(ctx: any, info: GraphQLResolveInfo, args: FindManySesionArgs): Promise<Sesion[]>;
+    createSesion(ctx: any, info: GraphQLResolveInfo, args: CreateSesionArgs): Promise<Sesion>;
+    createManySesion(ctx: any, info: GraphQLResolveInfo, args: CreateManySesionArgs): Promise<AffectedRowsOutput>;
+    deleteSesion(ctx: any, info: GraphQLResolveInfo, args: DeleteSesionArgs): Promise<Sesion | null>;
+    updateSesion(ctx: any, info: GraphQLResolveInfo, args: UpdateSesionArgs): Promise<Sesion | null>;
+    deleteManySesion(ctx: any, info: GraphQLResolveInfo, args: DeleteManySesionArgs): Promise<AffectedRowsOutput>;
+    updateManySesion(ctx: any, info: GraphQLResolveInfo, args: UpdateManySesionArgs): Promise<AffectedRowsOutput>;
+    upsertSesion(ctx: any, info: GraphQLResolveInfo, args: UpsertSesionArgs): Promise<Sesion>;
+    aggregateSesion(ctx: any, info: GraphQLResolveInfo, args: AggregateSesionArgs): Promise<AggregateSesion>;
+    groupBySesion(ctx: any, info: GraphQLResolveInfo, args: GroupBySesionArgs): Promise<SesionGroupBy[]>;
+}

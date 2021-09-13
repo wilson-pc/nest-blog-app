@@ -14,11 +14,27 @@ const auth_module_1 = require("./auth/auth.module");
 const blog_module_1 = require("./blog/blog.module");
 const prisma_module_1 = require("./prisma/prisma.module");
 const user_module_1 = require("./user/user.module");
+const client_1 = require("@prisma/client");
+const typegraphql_1 = require("./typegraphql");
+const auth_checker_1 = require("./auth/auth-checker");
+const prisma = new client_1.PrismaClient();
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [user_module_1.UserModule, blog_module_1.BlogModule, auth_module_1.AuthModule, prisma_module_1.PrismaModule],
+        imports: [
+            user_module_1.UserModule,
+            blog_module_1.BlogModule,
+            auth_module_1.AuthModule,
+            prisma_module_1.PrismaModule,
+            typegraphql_1.TypeGraphQLModule.forRoot({
+                playground: true,
+                introspection: true,
+                authChecker: auth_checker_1.authChecker,
+                validate: false,
+                context: ({ req }) => ({ prisma, req }),
+            }),
+        ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })
