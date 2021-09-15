@@ -36,8 +36,11 @@ input LoginInput {
 
 type Mutation {
   Login(login: LoginInput!): JwtPayload!
+  createPost(data: PostCreateInput!): Post!
   createUser(data: UserCreateInput!): User!
+  deletePost(where: PostWhereUniqueInput!): Post
   deleteUser(where: UserWhereUniqueInput!): User
+  updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
 }
 
@@ -86,6 +89,7 @@ input NestedStringNullableFilter {
 }
 
 type Post {
+  author: User
   authorId: String
   content: String
   createdAt: DateTime!
@@ -94,6 +98,13 @@ type Post {
   published: Boolean!
   title: String!
   updatedAt: DateTime!
+}
+
+input PostCreateInput {
+  content: String
+  image: String
+  published: Boolean
+  title: String!
 }
 
 input PostListRelationFilter {
@@ -129,6 +140,13 @@ enum PostScalarFieldEnum {
   updatedAt
 }
 
+input PostUpdateInput {
+  content: String
+  image: String
+  published: Boolean
+  title: String
+}
+
 input PostWhereInput {
   AND: [PostWhereInput!]
   NOT: [PostWhereInput!]
@@ -149,6 +167,8 @@ input PostWhereUniqueInput {
 }
 
 type Query {
+  post(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): Post
+  posts(cursor: PostWhereUniqueInput, distinct: [PostScalarFieldEnum!], orderBy: [PostOrderByWithRelationInput!], skip: Int, take: Int, where: PostWhereInput): [Post!]!
   profile: User!
   sayHello: String!
   user(cursor: UserWhereUniqueInput, distinct: [UserScalarFieldEnum!], orderBy: [UserOrderByWithRelationInput!], skip: Int, take: Int, where: UserWhereInput): User

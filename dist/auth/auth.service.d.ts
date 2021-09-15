@@ -10,6 +10,7 @@ export declare class AuthService {
     login(user: User): Promise<{
         user: Payload;
         access_token: string;
+        type: string;
     }>;
     getProfile(id: string): Promise<{
         email: string;

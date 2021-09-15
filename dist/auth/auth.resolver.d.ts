@@ -8,9 +8,10 @@ export declare class AuthResolver {
     private jwtService;
     constructor(jwtService: JwtService);
     sayHello(): string;
-    Login(login: LoginInput, { prisma }: Context): Promise<{
+    login(login: LoginInput, { prisma }: Context): Promise<{
         user: Payload;
         access_token: string;
+        type: string;
     }>;
     profile({ prisma, req }: Context, info: GraphQLResolveInfo): Promise<User>;
 }

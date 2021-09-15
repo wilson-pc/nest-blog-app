@@ -12,26 +12,38 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserResolver = void 0;
-const type_graphql_1 = require("../prisma/generated/type-graphql");
-const helpers_1 = require("../prisma/generated/type-graphql/helpers");
-const TypeGraphQL = require("type-graphql");
-const type_graphql_2 = require("type-graphql");
-const bcrypt = require("bcrypt");
-const FormData = require("form-data");
-const CreateUserArgs_1 = require("./args/CreateUserArgs");
-const common_1 = require("@nestjs/common");
+exports.BlogResolver = void 0;
 const axios_1 = require("@nestjs/axios");
-const rxjs_1 = require("rxjs");
+const common_1 = require("@nestjs/common");
+const type_graphql_1 = require("type-graphql");
 const _context_1 = require("../ context");
 const payload_1 = require("../payload");
-const UpdateUserArgs_1 = require("./args/UpdateUserArgs");
-let UserResolver = class UserResolver {
+const FormData = require("form-data");
+const type_graphql_2 = require("../prisma/generated/type-graphql");
+const helpers_1 = require("../prisma/generated/type-graphql/helpers");
+const TypeGraphQL = require("type-graphql");
+const CreatePostArgs_1 = require("./args/CreatePostArgs");
+const rxjs_1 = require("rxjs");
+const UpdatePostArgs_1 = require("./args/UpdatePostArgs");
+let BlogResolver = class BlogResolver {
     constructor(axios) {
         this.axios = axios;
     }
-    async createUser(ctx, info, args) {
-        args.data.password = bcrypt.hashSync(args.data.password, 10);
+    async post(ctx, info, args) {
+        return (0, helpers_1.getPrismaFromContext)(ctx).post.findFirst(Object.assign({}, args));
+    }
+    async posts(ctx, info, args) {
+        if (args.where) {
+            args.where.published = { equals: true };
+        }
+        else {
+            args.where = { published: { equals: true } };
+        }
+        return (0, helpers_1.getPrismaFromContext)(ctx).post.findMany(Object.assign({}, args));
+    }
+    async createPost({ prisma, req }, info, args) {
+        const user = req.user;
+        args.data.author = { connect: { id: user.sub } };
         if (args.data.image) {
             try {
                 const buff = Buffer.from(args.data.image.split(';base64,').pop(), 'base64');
@@ -48,26 +60,26 @@ let UserResolver = class UserResolver {
                 throw new common_1.HttpException(error.message, common_1.HttpStatus.BAD_REQUEST);
             }
         }
-        return (0, helpers_1.getPrismaFromContext)(ctx).user.create(Object.assign({}, args));
+        return (0, helpers_1.getPrismaFromContext)({ prisma }).post.create(Object.assign({}, args));
     }
-    async users(ctx, info, args) {
-        return (0, helpers_1.getPrismaFromContext)(ctx).user.findMany(Object.assign({}, args));
-    }
-    async user(ctx, info, args) {
-        return (0, helpers_1.getPrismaFromContext)(ctx).user.findFirst(Object.assign({}, args));
-    }
-    async deleteUser({ prisma, req }, info, args) {
+    async deletePost({ prisma, req }, info, args) {
         const user = req.user;
-        if (args.where.id == user.sub || args.where.email == user.email) {
-            return (0, helpers_1.getPrismaFromContext)({ prisma }).user.delete(Object.assign({}, args));
+        const post = await prisma.post.findFirst({
+            where: { OR: { id: args.where.id, authorId: user.sub } },
+        });
+        if (post) {
+            return (0, helpers_1.getPrismaFromContext)({ prisma }).post.delete(Object.assign({}, args));
         }
         else {
             throw new common_1.HttpException('action not allowed', common_1.HttpStatus.UNAUTHORIZED);
         }
     }
-    async updateUser({ prisma, req }, info, args) {
+    async updatePost({ prisma, req }, info, args) {
         const user = req.user;
-        if (args.where.id == user.sub || args.where.email == user.email) {
+        const post = await prisma.post.findFirst({
+            where: { OR: { id: args.where.id, authorId: user.sub } },
+        });
+        if (post) {
             if (args.data.image) {
                 try {
                     const buff = Buffer.from(args.data.image.split(';base64,').pop(), 'base64');
@@ -84,7 +96,7 @@ let UserResolver = class UserResolver {
                     throw new common_1.HttpException(error.message, common_1.HttpStatus.BAD_REQUEST);
                 }
             }
-            return (0, helpers_1.getPrismaFromContext)({ prisma }).user.update(Object.assign({}, args));
+            return (0, helpers_1.getPrismaFromContext)({ prisma }).post.update(Object.assign({}, args));
         }
         else {
             throw new common_1.HttpException('action not allowed', common_1.HttpStatus.UNAUTHORIZED);
@@ -92,65 +104,66 @@ let UserResolver = class UserResolver {
     }
 };
 __decorate([
-    TypeGraphQL.Mutation((_returns) => type_graphql_1.User, {
+    TypeGraphQL.Query((_returns) => type_graphql_2.Post, {
+        nullable: true,
+    }),
+    __param(0, TypeGraphQL.Ctx()),
+    __param(1, TypeGraphQL.Info()),
+    __param(2, TypeGraphQL.Args()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, type_graphql_2.FindFirstPostArgs]),
+    __metadata("design:returntype", Promise)
+], BlogResolver.prototype, "post", null);
+__decorate([
+    TypeGraphQL.Query((_returns) => [type_graphql_2.Post], {
         nullable: false,
     }),
     __param(0, TypeGraphQL.Ctx()),
     __param(1, TypeGraphQL.Info()),
     __param(2, TypeGraphQL.Args()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, CreateUserArgs_1.CreateUserArgs]),
+    __metadata("design:paramtypes", [Object, Object, type_graphql_2.FindManyPostArgs]),
     __metadata("design:returntype", Promise)
-], UserResolver.prototype, "createUser", null);
+], BlogResolver.prototype, "posts", null);
 __decorate([
-    TypeGraphQL.Query((_returns) => [type_graphql_1.User], {
+    TypeGraphQL.Mutation((_returns) => type_graphql_2.Post, {
         nullable: false,
     }),
+    (0, type_graphql_1.Authorized)(),
     __param(0, TypeGraphQL.Ctx()),
     __param(1, TypeGraphQL.Info()),
     __param(2, TypeGraphQL.Args()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, type_graphql_1.FindManyUserArgs]),
+    __metadata("design:paramtypes", [Object, Object, CreatePostArgs_1.CreatePostArgs]),
     __metadata("design:returntype", Promise)
-], UserResolver.prototype, "users", null);
+], BlogResolver.prototype, "createPost", null);
 __decorate([
-    TypeGraphQL.Query((_returns) => type_graphql_1.User, {
+    TypeGraphQL.Mutation((_returns) => type_graphql_2.Post, {
         nullable: true,
     }),
+    (0, type_graphql_1.Authorized)(),
     __param(0, TypeGraphQL.Ctx()),
     __param(1, TypeGraphQL.Info()),
     __param(2, TypeGraphQL.Args()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, type_graphql_1.FindFirstUserArgs]),
+    __metadata("design:paramtypes", [Object, Object, type_graphql_2.DeletePostArgs]),
     __metadata("design:returntype", Promise)
-], UserResolver.prototype, "user", null);
+], BlogResolver.prototype, "deletePost", null);
 __decorate([
-    TypeGraphQL.Mutation((_returns) => type_graphql_1.User, {
+    TypeGraphQL.Mutation((_returns) => type_graphql_2.Post, {
         nullable: true,
     }),
-    (0, type_graphql_2.Authorized)(),
+    (0, type_graphql_1.Authorized)(),
     __param(0, TypeGraphQL.Ctx()),
     __param(1, TypeGraphQL.Info()),
     __param(2, TypeGraphQL.Args()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, type_graphql_1.DeleteUserArgs]),
+    __metadata("design:paramtypes", [Object, Object, UpdatePostArgs_1.UpdatePostArgs]),
     __metadata("design:returntype", Promise)
-], UserResolver.prototype, "deleteUser", null);
-__decorate([
-    TypeGraphQL.Mutation((_returns) => type_graphql_1.User, {
-        nullable: true,
-    }),
-    (0, type_graphql_2.Authorized)(),
-    __param(0, TypeGraphQL.Ctx()),
-    __param(1, TypeGraphQL.Info()),
-    __param(2, TypeGraphQL.Args()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, UpdateUserArgs_1.UpdateUserArgs]),
-    __metadata("design:returntype", Promise)
-], UserResolver.prototype, "updateUser", null);
-UserResolver = __decorate([
-    TypeGraphQL.Resolver(),
+], BlogResolver.prototype, "updatePost", null);
+BlogResolver = __decorate([
+    TypeGraphQL.Resolver((_of) => type_graphql_2.Post),
     __metadata("design:paramtypes", [axios_1.HttpService])
-], UserResolver);
-exports.UserResolver = UserResolver;
-//# sourceMappingURL=user.resolver.js.map
+], BlogResolver);
+exports.BlogResolver = BlogResolver;
+//# sourceMappingURL=blog.resolver.js.map

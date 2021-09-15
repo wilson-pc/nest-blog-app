@@ -31,7 +31,7 @@ let AuthResolver = class AuthResolver {
     sayHello() {
         return 'Hello World!';
     }
-    async Login(login, { prisma }) {
+    async login(login, { prisma }) {
         const user = await prisma.user.findUnique({
             where: { email: login.email },
         });
@@ -40,6 +40,7 @@ let AuthResolver = class AuthResolver {
             return {
                 user: payload,
                 access_token: this.jwtService.sign(payload),
+                type: 'Bearer',
             };
         }
         else {
@@ -68,7 +69,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [login_type_1.LoginInput, Object]),
     __metadata("design:returntype", Promise)
-], AuthResolver.prototype, "Login", null);
+], AuthResolver.prototype, "login", null);
 __decorate([
     TypeGraphQL.Query(() => type_graphql_1.User),
     (0, type_graphql_2.Authorized)(),

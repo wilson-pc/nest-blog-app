@@ -12,13 +12,15 @@ const blog_service_1 = require("./blog.service");
 const blog_controller_1 = require("./blog.controller");
 const prisma_module_1 = require("../prisma/prisma.module");
 const axios_1 = require("@nestjs/axios");
+const blog_resolver_1 = require("./blog.resolver");
+const type_graphql_1 = require("../prisma/generated/type-graphql");
 let BlogModule = class BlogModule {
 };
 BlogModule = __decorate([
     (0, common_1.Module)({
         imports: [prisma_module_1.PrismaModule, axios_1.HttpModule],
         controllers: [blog_controller_1.BlogController],
-        providers: [blog_service_1.BlogService],
+        providers: [blog_service_1.BlogService, blog_resolver_1.BlogResolver, type_graphql_1.PostRelationsResolver],
     })
 ], BlogModule);
 exports.BlogModule = BlogModule;

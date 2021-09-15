@@ -45,6 +45,7 @@ let AuthService = class AuthService {
         return {
             user: payload,
             access_token: this.jwtService.sign(payload),
+            type: 'Bearer',
         };
     }
     async getProfile(id) {

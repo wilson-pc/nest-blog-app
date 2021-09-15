@@ -9,52 +9,38 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JwtPayload = exports.userPayload = void 0;
+exports.PostUpdateInput = void 0;
 const TypeGraphQL = require("type-graphql");
-let userPayload = class userPayload {
+let PostUpdateInput = class PostUpdateInput {
 };
 __decorate([
     TypeGraphQL.Field((_type) => String, {
-        nullable: false,
+        nullable: true,
     }),
     __metadata("design:type", String)
-], userPayload.prototype, "email", void 0);
+], PostUpdateInput.prototype, "content", void 0);
+__decorate([
+    TypeGraphQL.Field((_type) => Boolean, {
+        nullable: true,
+    }),
+    __metadata("design:type", Boolean)
+], PostUpdateInput.prototype, "published", void 0);
 __decorate([
     TypeGraphQL.Field((_type) => String, {
-        nullable: false,
+        nullable: true,
     }),
     __metadata("design:type", String)
-], userPayload.prototype, "sub", void 0);
-userPayload = __decorate([
-    TypeGraphQL.ObjectType({
+], PostUpdateInput.prototype, "title", void 0);
+__decorate([
+    TypeGraphQL.Field((_type) => String, {
+        nullable: true,
+    }),
+    __metadata("design:type", String)
+], PostUpdateInput.prototype, "image", void 0);
+PostUpdateInput = __decorate([
+    TypeGraphQL.InputType({
         isAbstract: true,
     })
-], userPayload);
-exports.userPayload = userPayload;
-let JwtPayload = class JwtPayload {
-};
-__decorate([
-    TypeGraphQL.Field((_type) => String, {
-        nullable: false,
-    }),
-    __metadata("design:type", String)
-], JwtPayload.prototype, "access_token", void 0);
-__decorate([
-    TypeGraphQL.Field((_type) => userPayload, {
-        nullable: false,
-    }),
-    __metadata("design:type", userPayload)
-], JwtPayload.prototype, "user", void 0);
-__decorate([
-    TypeGraphQL.Field((_type) => String, {
-        nullable: false,
-    }),
-    __metadata("design:type", userPayload)
-], JwtPayload.prototype, "type", void 0);
-JwtPayload = __decorate([
-    TypeGraphQL.ObjectType({
-        isAbstract: true,
-    })
-], JwtPayload);
-exports.JwtPayload = JwtPayload;
-//# sourceMappingURL=jwt-payload.js.map
+], PostUpdateInput);
+exports.PostUpdateInput = PostUpdateInput;
+//# sourceMappingURL=PostUpdateInput.js.map

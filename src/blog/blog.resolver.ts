@@ -1,37 +1,70 @@
+import { HttpService } from '@nestjs/axios';
+import { HttpException, HttpStatus } from '@nestjs/common';
+
+import { Authorized } from 'type-graphql';
 import { GraphQLResolveInfo } from 'graphql';
+import { Context } from 'src/ context';
+import { Payload } from 'src/payload';
+import * as FormData from 'form-data';
 import {
-  DeleteUserArgs,
-  FindFirstUserArgs,
-  FindManyUserArgs,
-  User,
+  DeletePostArgs,
+  FindFirstPostArgs,
+  FindManyPostArgs,
+  Post,
 } from 'src/prisma/generated/type-graphql';
 import { getPrismaFromContext } from 'src/prisma/generated/type-graphql/helpers';
 import * as TypeGraphQL from 'type-graphql';
-import { Authorized } from 'type-graphql';
-import * as bcrypt from 'bcrypt';
-import * as FormData from 'form-data';
-import { CreateUserArgs } from './args/CreateUserArgs';
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
+import { CreatePostArgs } from './args/CreatePostArgs';
 import { lastValueFrom } from 'rxjs';
+import { UpdatePostArgs } from './args/UpdatePostArgs';
 
-import { Context } from 'src/ context';
-import { Payload } from 'src/payload';
-import { UpdateUserArgs } from './args/UpdateUserArgs';
-
-@TypeGraphQL.Resolver()
-export class UserResolver {
+@TypeGraphQL.Resolver((_of) => Post)
+export class BlogResolver {
   constructor(private axios: HttpService) {}
 
-  @TypeGraphQL.Mutation((_returns) => User, {
-    nullable: false,
+  @TypeGraphQL.Query((_returns) => Post, {
+    nullable: true,
   })
-  async createUser(
+  async post(
     @TypeGraphQL.Ctx() ctx: any,
     @TypeGraphQL.Info() info: GraphQLResolveInfo,
-    @TypeGraphQL.Args() args: CreateUserArgs,
-  ): Promise<User> {
-    args.data.password = bcrypt.hashSync(args.data.password, 10);
+    @TypeGraphQL.Args() args: FindFirstPostArgs,
+  ): Promise<Post | null> {
+    return getPrismaFromContext(ctx).post.findFirst({
+      ...args,
+    });
+  }
+
+  @TypeGraphQL.Query((_returns) => [Post], {
+    nullable: false,
+  })
+  async posts(
+    @TypeGraphQL.Ctx() ctx: any,
+    @TypeGraphQL.Info() info: GraphQLResolveInfo,
+    @TypeGraphQL.Args() args: FindManyPostArgs,
+  ): Promise<Post[]> {
+    if (args.where) {
+      args.where.published = { equals: true };
+    } else {
+      args.where = { published: { equals: true } };
+    }
+
+    return getPrismaFromContext(ctx).post.findMany({
+      ...args,
+    });
+  }
+
+  @TypeGraphQL.Mutation((_returns) => Post, {
+    nullable: false,
+  })
+  @Authorized()
+  async createPost(
+    @TypeGraphQL.Ctx() { prisma, req }: Context,
+    @TypeGraphQL.Info() info: GraphQLResolveInfo,
+    @TypeGraphQL.Args() args: CreatePostArgs,
+  ): Promise<Post> {
+    const user = req.user as Payload;
+    args.data.author = { connect: { id: user.sub } };
     if (args.data.image) {
       try {
         const buff = Buffer.from(
@@ -51,50 +84,26 @@ export class UserResolver {
         throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
       }
     }
-    return getPrismaFromContext(ctx).user.create({
+    return getPrismaFromContext({ prisma }).post.create({
       ...args,
     });
   }
 
-  @TypeGraphQL.Query((_returns) => [User], {
-    nullable: false,
-  })
-  async users(
-    @TypeGraphQL.Ctx() ctx: any,
-    @TypeGraphQL.Info() info: GraphQLResolveInfo,
-    @TypeGraphQL.Args() args: FindManyUserArgs,
-  ): Promise<User[]> {
-    return getPrismaFromContext(ctx).user.findMany({
-      ...args,
-    });
-  }
-
-  @TypeGraphQL.Query((_returns) => User, {
-    nullable: true,
-  })
-  async user(
-    @TypeGraphQL.Ctx() ctx: any,
-    @TypeGraphQL.Info() info: GraphQLResolveInfo,
-    @TypeGraphQL.Args() args: FindFirstUserArgs,
-  ): Promise<User | null> {
-    return getPrismaFromContext(ctx).user.findFirst({
-      ...args,
-    });
-  }
-
-  @TypeGraphQL.Mutation((_returns) => User, {
+  @TypeGraphQL.Mutation((_returns) => Post, {
     nullable: true,
   })
   @Authorized()
-  async deleteUser(
+  async deletePost(
     @TypeGraphQL.Ctx() { prisma, req }: Context,
     @TypeGraphQL.Info() info: GraphQLResolveInfo,
-    @TypeGraphQL.Args() args: DeleteUserArgs,
-  ): Promise<User | null> {
+    @TypeGraphQL.Args() args: DeletePostArgs,
+  ): Promise<Post | null> {
     const user = req.user as Payload;
-
-    if (args.where.id == user.sub || args.where.email == user.email) {
-      return getPrismaFromContext({ prisma }).user.delete({
+    const post = await prisma.post.findFirst({
+      where: { OR: { id: args.where.id, authorId: user.sub } },
+    });
+    if (post) {
+      return getPrismaFromContext({ prisma }).post.delete({
         ...args,
       });
     } else {
@@ -102,17 +111,20 @@ export class UserResolver {
     }
   }
 
-  @TypeGraphQL.Mutation((_returns) => User, {
+  @TypeGraphQL.Mutation((_returns) => Post, {
     nullable: true,
   })
   @Authorized()
-  async updateUser(
+  async updatePost(
     @TypeGraphQL.Ctx() { prisma, req }: Context,
     @TypeGraphQL.Info() info: GraphQLResolveInfo,
-    @TypeGraphQL.Args() args: UpdateUserArgs,
-  ): Promise<User | null> {
+    @TypeGraphQL.Args() args: UpdatePostArgs,
+  ): Promise<Post | null> {
     const user = req.user as Payload;
-    if (args.where.id == user.sub || args.where.email == user.email) {
+    const post = await prisma.post.findFirst({
+      where: { OR: { id: args.where.id, authorId: user.sub } },
+    });
+    if (post) {
       if (args.data.image) {
         try {
           const buff = Buffer.from(
@@ -132,7 +144,7 @@ export class UserResolver {
           throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
       }
-      return getPrismaFromContext({ prisma }).user.update({
+      return getPrismaFromContext({ prisma }).post.update({
         ...args,
       });
     } else {

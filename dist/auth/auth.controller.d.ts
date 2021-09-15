@@ -5,6 +5,7 @@ export declare class AuthController {
     login(req: any): Promise<{
         user: import("../payload").Payload;
         access_token: string;
+        type: string;
     }>;
     getProfile(req: any): Promise<{
         email: string;

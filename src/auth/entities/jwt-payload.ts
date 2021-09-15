@@ -28,4 +28,9 @@ export class JwtPayload {
     nullable: false,
   })
   user: userPayload;
+
+  @TypeGraphQL.Field((_type) => String, {
+    nullable: false,
+  })
+  type: userPayload;
 }

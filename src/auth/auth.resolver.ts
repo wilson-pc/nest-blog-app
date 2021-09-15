@@ -27,7 +27,7 @@ export class AuthResolver {
     return 'Hello World!';
   }
   @TypeGraphQL.Mutation((returns) => JwtPayload)
-  async Login(
+  async login(
     @TypeGraphQL.Arg('login') login: LoginInput,
     @TypeGraphQL.Ctx() { prisma }: Context,
   ) {
@@ -40,6 +40,7 @@ export class AuthResolver {
       return {
         user: payload,
         access_token: this.jwtService.sign(payload),
+        type: 'Bearer',
       };
     } else {
       console.log('llega y se exepcion');

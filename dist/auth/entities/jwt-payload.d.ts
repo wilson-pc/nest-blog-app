@@ -5,4 +5,5 @@ export declare class userPayload {
 export declare class JwtPayload {
     access_token: string;
     user: userPayload;
+    type: userPayload;
 }
