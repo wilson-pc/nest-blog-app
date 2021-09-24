@@ -30,7 +30,9 @@ AppModule = __decorate([
             typegraphql_1.TypeGraphQLModule.forRoot({
                 playground: true,
                 introspection: true,
+                installSubscriptionHandlers: true,
                 authChecker: auth_checker_1.authChecker,
+                emitSchemaFile: true,
                 validate: false,
                 context: ({ req }) => ({ prisma, req }),
             }),

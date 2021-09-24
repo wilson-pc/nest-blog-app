@@ -25,6 +25,7 @@ const TypeGraphQL = require("type-graphql");
 const CreatePostArgs_1 = require("./args/CreatePostArgs");
 const rxjs_1 = require("rxjs");
 const UpdatePostArgs_1 = require("./args/UpdatePostArgs");
+const message_1 = require("./entities/message");
 let BlogResolver = class BlogResolver {
     constructor(axios) {
         this.axios = axios;
@@ -102,6 +103,15 @@ let BlogResolver = class BlogResolver {
             throw new common_1.HttpException('action not allowed', common_1.HttpStatus.UNAUTHORIZED);
         }
     }
+    async sendMessage(ctx, info, pubSub, login) {
+        await pubSub.publish('NOTIFICATIONS', login);
+        const message = { text: login };
+        return message;
+    }
+    newNotification(notificationPayload) {
+        const message = { text: notificationPayload };
+        return message;
+    }
 };
 __decorate([
     TypeGraphQL.Query((_returns) => type_graphql_2.Post, {
@@ -161,6 +171,27 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, UpdatePostArgs_1.UpdatePostArgs]),
     __metadata("design:returntype", Promise)
 ], BlogResolver.prototype, "updatePost", null);
+__decorate([
+    TypeGraphQL.Mutation((_returns) => message_1.Message, {
+        nullable: true,
+    }),
+    __param(0, TypeGraphQL.Ctx()),
+    __param(1, TypeGraphQL.Info()),
+    __param(2, TypeGraphQL.PubSub()),
+    __param(3, TypeGraphQL.Arg('text')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, TypeGraphQL.PubSubEngine, String]),
+    __metadata("design:returntype", Promise)
+], BlogResolver.prototype, "sendMessage", null);
+__decorate([
+    TypeGraphQL.Subscription({
+        topics: 'NOTIFICATIONS',
+    }),
+    __param(0, TypeGraphQL.Root()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", message_1.Message)
+], BlogResolver.prototype, "newNotification", null);
 BlogResolver = __decorate([
     TypeGraphQL.Resolver((_of) => type_graphql_2.Post),
     __metadata("design:paramtypes", [axios_1.HttpService])

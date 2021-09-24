@@ -22,6 +22,7 @@ const prisma = new PrismaClient();
     TypeGraphQLModule.forRoot({
       playground: true,
       introspection: true,
+      installSubscriptionHandlers: true,
       authChecker: authChecker,
       emitSchemaFile: true,
       validate: false,

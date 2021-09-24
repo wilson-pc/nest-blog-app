@@ -26,6 +26,7 @@ input DateTimeFilter {
 
 type JwtPayload {
   access_token: String!
+  type: String!
   user: userPayload!
 }
 
@@ -34,12 +35,17 @@ input LoginInput {
   password: String
 }
 
+type Message {
+  text: String!
+}
+
 type Mutation {
-  Login(login: LoginInput!): JwtPayload!
   createPost(data: PostCreateInput!): Post!
   createUser(data: UserCreateInput!): User!
   deletePost(where: PostWhereUniqueInput!): Post
   deleteUser(where: UserWhereUniqueInput!): User
+  login(login: LoginInput!): JwtPayload!
+  sendMessage(text: String!): Message
   updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
 }
@@ -268,6 +274,10 @@ input StringNullableFilter {
   not: NestedStringNullableFilter
   notIn: [String!]
   startsWith: String
+}
+
+type Subscription {
+  newNotification: Message!
 }
 
 type User {

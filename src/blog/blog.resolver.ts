@@ -17,6 +17,7 @@ import * as TypeGraphQL from 'type-graphql';
 import { CreatePostArgs } from './args/CreatePostArgs';
 import { lastValueFrom } from 'rxjs';
 import { UpdatePostArgs } from './args/UpdatePostArgs';
+import { Message } from './entities/message';
 
 @TypeGraphQL.Resolver((_of) => Post)
 export class BlogResolver {
@@ -150,5 +151,31 @@ export class BlogResolver {
     } else {
       throw new HttpException('action not allowed', HttpStatus.UNAUTHORIZED);
     }
+  }
+
+  //
+
+  @TypeGraphQL.Mutation((_returns) => Message, {
+    nullable: true,
+  })
+  async sendMessage(
+    @TypeGraphQL.Ctx() ctx: any,
+    @TypeGraphQL.Info() info: GraphQLResolveInfo,
+    @TypeGraphQL.PubSub() pubSub: TypeGraphQL.PubSubEngine,
+    @TypeGraphQL.Arg('text') login: string,
+  ): Promise<Message> {
+    await pubSub.publish('NOTIFICATIONS', login);
+    const message: Message = { text: login };
+    return message;
+  }
+
+  @TypeGraphQL.Subscription({
+    topics: 'NOTIFICATIONS',
+    // filter: ({ payload, args }) => args.priorities.includes(payload.priority),
+  })
+  newNotification(@TypeGraphQL.Root() notificationPayload: string): Message {
+    // ...
+    const message: Message = { text: notificationPayload };
+    return message;
   }
 }
